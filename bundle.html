@@ -11,10 +11,14 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Frank+Ruhl+Libre:wght@300;400;500;700;900&family=Suez+One&display=swap" rel="stylesheet" />
   <script src="https://cdn.jsdelivr.net/npm/page-flip@2.0.7/dist/js/page-flip.browser.js"></script>
-<style>
+  <style>
 @import url('https://fonts.googleapis.com/css2?family=Frank+Ruhl+Libre:wght@300;400;500;700;900&family=Suez+One&display=swap');
 
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
 
 :root {
   --black: #0A0A0A;
@@ -28,168 +32,778 @@
   --spine-width: 28px;
 }
 
-html, body { width: 100%; height: 100%; background: var(--black); overflow: hidden; }
+html, body {
+  width: 100%;
+  height: 100%;
+  background: var(--black);
+  overflow: hidden;
+}
 
 body {
-  display: flex; flex-direction: column; align-items: center; justify-content: center;
-  font-family: 'Frank Ruhl Libre', serif; direction: rtl; user-select: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Frank Ruhl Libre', serif;
+  direction: rtl;
+  user-select: none;
 }
 
+/* ── Red vignette glow ── */
 body::before {
-  content: ''; position: fixed; inset: 0;
-  background: radial-gradient(ellipse 60% 50% at 50% 50%, rgba(80,0,0,0.18) 0%, transparent 70%);
-  pointer-events: none; z-index: 0;
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: radial-gradient(
+    ellipse 60% 50% at 50% 50%,
+    rgba(80, 0, 0, 0.18) 0%,
+    transparent 70%
+  );
+  pointer-events: none;
+  z-index: 0;
 }
 
-#scene { position: relative; z-index: 1; display: flex; align-items: center; justify-content: center; perspective: 2000px; }
+/* ── Stage / scene ── */
+#scene {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  perspective: 2000px;
+}
 
+/* ── Book wrapper: spine + flipbook ── */
 #book-wrapper {
-  display: flex; align-items: stretch;
+  display: flex;
+  align-items: stretch;
   filter: drop-shadow(0 40px 60px rgba(0,0,0,0.9)) drop-shadow(0 8px 20px rgba(120,0,0,0.15));
-  transform-style: preserve-3d; transform: rotateX(4deg);
+  transform-style: preserve-3d;
+  transform: rotateX(4deg);
 }
 
+/* ── Spine (right side — Hebrew books open right-to-left) ── */
 #spine {
   width: var(--spine-width);
   background: linear-gradient(180deg, #1a1a1a 0%, #0d0d0d 40%, #1a1a1a 100%);
-  border-right: 1px solid #2a2a2a; border-left: 1px solid #000;
-  display: flex; align-items: center; justify-content: center;
-  flex-shrink: 0; position: relative; z-index: 10;
+  border-right: 1px solid #2a2a2a;
+  border-left: 1px solid #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  position: relative;
+  z-index: 10;
 }
+
 #spine::after {
-  content: ''; position: absolute; right: 0; top: 0; bottom: 0; width: 2px;
+  content: '';
+  position: absolute;
+  right: 0; top: 0; bottom: 0;
+  width: 2px;
   background: linear-gradient(180deg, transparent, rgba(255,255,255,0.06), transparent);
 }
+
 #spine-title {
-  writing-mode: vertical-rl; text-orientation: mixed; transform: rotate(180deg);
-  color: rgba(255,255,255,0.45); font-family: 'Frank Ruhl Libre', serif;
-  font-size: 9px; font-weight: 400; letter-spacing: 2px; white-space: nowrap;
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+  transform: rotate(180deg);
+  color: rgba(255,255,255,0.45);
+  font-family: 'Frank Ruhl Libre', serif;
+  font-size: 9px;
+  font-weight: 400;
+  letter-spacing: 2px;
+  white-space: nowrap;
 }
 
-#flip-book { position: relative; background: transparent; }
+/* ── Page flip container ── */
+#flip-book {
+  position: relative;
+  background: transparent;
+}
 
-.stf__parent { position: relative !important; }
-.stf__block { position: absolute !important; top: 0; left: 0; }
+/* ── StPageFlip overrides ── */
+.stf__parent {
+  position: relative !important;
+}
 
-/* ── Cover ── */
+.stf__block {
+  position: absolute !important;
+  top: 0;
+  left: 0;
+}
+
+/* ── Cover pages ── */
 .page-cover {
-  background: var(--cover-black) !important; color: #fff;
-  display: flex; flex-direction: column; align-items: center; justify-content: center;
-  padding: 40px 32px; position: relative; overflow: hidden;
+  background: var(--cover-black) !important;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 32px;
+  position: relative;
+  overflow: hidden;
 }
+
 .page-cover::before {
-  content: ''; position: absolute; inset: 6px;
-  border: 0.5px solid rgba(255,255,255,0.06); pointer-events: none;
-}
-.page-cover::after {
-  content: ''; position: absolute; inset: 0;
-  background: repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(255,255,255,0.008) 3px, rgba(255,255,255,0.008) 4px);
+  content: '';
+  position: absolute;
+  inset: 6px;
+  border: 0.5px solid rgba(255,255,255,0.06);
   pointer-events: none;
 }
-.cover-cross { font-size: 28px; color: var(--red); margin-bottom: 20px; text-shadow: 0 0 30px rgba(122,0,0,0.6); font-family: serif; }
-.cover-title { font-family: 'Suez One', serif; font-size: clamp(28px,5vw,48px); color: #fff; text-align: center; line-height: 1.2; letter-spacing: 2px; text-shadow: 0 2px 20px rgba(0,0,0,0.8); margin-bottom: 20px; }
-.cover-rule { width: 60%; height: 1px; background: var(--red); margin: 10px auto; }
-.cover-subtitle { font-family: 'Frank Ruhl Libre', serif; font-size: 13px; color: rgba(255,255,255,0.55); text-align: center; letter-spacing: 3px; font-weight: 300; margin: 4px 0; }
-.cover-author { position: absolute; bottom: 36px; font-family: 'Frank Ruhl Libre', serif; font-size: 11px; color: rgba(255,255,255,0.3); letter-spacing: 2px; }
-.page-cover-front { box-shadow: inset -4px 0 12px rgba(0,0,0,0.5); }
 
-.page-back-cover { background: #0d0d0d !important; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden; }
-.back-cover-seal { width: 60px; height: 60px; border: 1px solid rgba(122,0,0,0.4); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: rgba(122,0,0,0.5); font-size: 24px; }
-
-/* ── Inner pages ── */
-.page-inner { background: var(--page-cream) !important; color: var(--text-black); position: relative; overflow: hidden; }
-.page-inner::before {
-  content: ''; position: absolute; inset: 0;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
-  pointer-events: none; z-index: 0; opacity: 0.6;
+.page-cover::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 3px,
+      rgba(255,255,255,0.008) 3px,
+      rgba(255,255,255,0.008) 4px
+    );
+  pointer-events: none;
 }
 
-.page-content { position: relative; z-index: 1; padding: 36px 32px 48px; height: 100%; overflow: hidden; direction: rtl; }
+.cover-cross {
+  font-size: 28px;
+  color: var(--red);
+  margin-bottom: 20px;
+  text-shadow: 0 0 30px rgba(122, 0, 0, 0.6);
+  letter-spacing: 0;
+  font-family: serif;
+}
 
-.chapter-header-page .page-content { display: flex; flex-direction: column; align-items: flex-start; justify-content: center; padding: 48px 36px; }
-.chapter-top-rule { width: 100%; height: 0.5px; background: #bbb; margin-bottom: 24px; }
-.chapter-number { font-family: 'Frank Ruhl Libre', serif; font-size: 11px; color: var(--red); font-variant: small-caps; letter-spacing: 3px; font-weight: 700; margin-bottom: 10px; text-transform: uppercase; }
-.chapter-title { font-family: 'Suez One', serif; font-size: clamp(22px,4vw,36px); color: var(--text-black); line-height: 1.2; margin-bottom: 12px; }
-.chapter-subtitle { font-family: 'Frank Ruhl Libre', serif; font-size: 13px; color: var(--gray-mid); font-weight: 300; margin-bottom: 24px; }
-.chapter-bottom-rule { width: 100%; height: 0.5px; background: var(--red); opacity: 0.6; }
+.cover-title {
+  font-family: 'Suez One', serif;
+  font-size: clamp(28px, 5vw, 48px);
+  color: #fff;
+  text-align: center;
+  line-height: 1.2;
+  letter-spacing: 2px;
+  text-shadow: 0 2px 20px rgba(0,0,0,0.8);
+  margin-bottom: 20px;
+}
 
-.body-text { font-family: 'Frank Ruhl Libre', serif; font-size: 14px; line-height: 1.7; text-align: justify; direction: rtl; }
-.verse-block { margin-bottom: 14px; display: flex; gap: 8px; align-items: flex-start; }
-.verse-number { color: var(--red); font-weight: 700; font-size: 12px; min-width: 18px; text-align: right; padding-top: 2px; flex-shrink: 0; }
-.verse-text { flex: 1; text-align: justify; }
-.callout-block { border-top: 3px solid var(--red); border-bottom: 3px solid var(--red); padding: 14px 16px; margin: 18px 0; text-align: center; font-family: 'Frank Ruhl Libre', serif; font-size: 13.5px; font-weight: 700; color: var(--text-black); line-height: 1.6; }
-.italic-block { font-style: italic; color: var(--gray-dark); margin: 12px 0; padding-right: 14px; border-right: 2px solid rgba(122,0,0,0.25); font-size: 13px; line-height: 1.65; }
+.cover-rule {
+  width: 60%;
+  height: 1px;
+  background: var(--red);
+  margin: 10px auto;
+}
 
-.page-number { position: absolute; bottom: 14px; left: 50%; transform: translateX(-50%); font-size: 10px; color: var(--gray-mid); letter-spacing: 2px; font-family: 'Frank Ruhl Libre', serif; font-weight: 300; }
+.cover-subtitle {
+  font-family: 'Frank Ruhl Libre', serif;
+  font-size: 13px;
+  color: rgba(255,255,255,0.55);
+  text-align: center;
+  letter-spacing: 3px;
+  font-weight: 300;
+  margin: 4px 0;
+  text-transform: uppercase;
+}
 
-/* ── TOC ── */
-.toc-page .page-content { padding: 40px 36px; }
-.toc-title { font-family: 'Suez One', serif; font-size: 18px; color: var(--text-black); margin-bottom: 24px; padding-bottom: 10px; border-bottom: 0.5px solid #bbb; }
-.toc-item { display: flex; justify-content: space-between; align-items: baseline; padding: 8px 0; border-bottom: 0.5px dashed #ddd; cursor: pointer; transition: color 0.2s; }
-.toc-item:hover { color: var(--red); }
-.toc-chapter-num { color: var(--red); font-size: 12px; font-weight: 700; margin-left: 8px; }
-.toc-chapter-title { flex: 1; font-size: 14px; }
-.toc-page-num { font-size: 11px; color: var(--gray-mid); }
+.cover-author {
+  position: absolute;
+  bottom: 36px;
+  font-family: 'Frank Ruhl Libre', serif;
+  font-size: 11px;
+  color: rgba(255,255,255,0.3);
+  letter-spacing: 2px;
+}
 
-/* ── UI chrome ── */
-#progress-bar { position: fixed; top: 0; left: 0; height: 2px; background: var(--red); z-index: 500; transition: width 0.4s ease; box-shadow: 0 0 8px rgba(122,0,0,0.6); }
+/* ── Back cover ── */
+.page-back-cover {
+  background: #0d0d0d !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
 
-#chapter-dots { position: fixed; bottom: max(20px, env(safe-area-inset-bottom, 20px)); left: 50%; transform: translateX(-50%); display: flex; gap: 8px; z-index: 100; }
-.chapter-dot { width: 7px; height: 7px; border-radius: 50%; background: rgba(255,255,255,0.18); border: 1px solid rgba(255,255,255,0.12); cursor: pointer; transition: background 0.25s, transform 0.25s; }
-.chapter-dot.active { background: var(--red); border-color: var(--red-light); transform: scale(1.3); }
-.chapter-dot:hover { background: rgba(255,255,255,0.4); }
+.back-cover-seal {
+  width: 60px;
+  height: 60px;
+  border: 1px solid rgba(122, 0, 0, 0.4);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(122, 0, 0, 0.5);
+  font-size: 24px;
+}
 
-#edit-btn { position: fixed; bottom: max(20px, env(safe-area-inset-bottom, 20px)); left: max(20px, env(safe-area-inset-left, 20px)); width: 34px; height: 34px; background: rgba(20,20,20,0.9); border: 1px solid rgba(255,255,255,0.08); border-radius: 6px; color: rgba(255,255,255,0.35); font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; z-index: 200; transition: color 0.2s, border-color 0.2s; }
-#edit-btn:hover { color: rgba(255,255,255,0.7); border-color: rgba(255,255,255,0.2); }
+/* ── Interior pages ── */
+.page-inner {
+  background: var(--page-cream) !important;
+  color: var(--text-black);
+  position: relative;
+  overflow: hidden;
+}
 
-#editor-drawer { position: fixed; bottom: 0; left: 0; right: 0; height: 60vh; background: #141414; border-top: 1px solid rgba(255,255,255,0.08); z-index: 300; display: flex; flex-direction: column; transform: translateY(100%); transition: transform 0.35s cubic-bezier(0.4,0,0.2,1); padding-bottom: env(safe-area-inset-bottom, 0px); }
-#editor-drawer.open { transform: translateY(0); }
-#drawer-header { display: flex; align-items: center; justify-content: space-between; padding: 12px 20px; border-bottom: 1px solid rgba(255,255,255,0.06); flex-shrink: 0; }
-#drawer-header span { font-family: 'Frank Ruhl Libre', serif; font-size: 12px; color: rgba(255,255,255,0.4); letter-spacing: 2px; direction: rtl; }
-#drawer-actions { display: flex; gap: 8px; }
-.drawer-btn { padding: 5px 14px; border-radius: 4px; border: 1px solid rgba(255,255,255,0.12); background: transparent; color: rgba(255,255,255,0.5); font-size: 11px; cursor: pointer; font-family: 'Frank Ruhl Libre', serif; transition: all 0.2s; }
-.drawer-btn:hover { background: rgba(255,255,255,0.05); color: rgba(255,255,255,0.8); }
-.drawer-btn.primary { background: var(--red); border-color: var(--red); color: #fff; }
-.drawer-btn.primary:hover { background: var(--red-light); }
-#json-editor { flex: 1; padding: 16px 20px; background: transparent; color: #d4d4d4; font-family: 'Courier New', monospace; font-size: 12px; line-height: 1.6; border: none; resize: none; outline: none; direction: ltr; text-align: left; }
-#editor-error { padding: 8px 20px; font-size: 11px; color: #ff6b6b; font-family: monospace; flex-shrink: 0; min-height: 24px; }
+/* Paper grain texture */
+.page-inner::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.6;
+}
 
-#nav-left, #nav-right { position: fixed; top: 0; bottom: 0; width: 22%; z-index: 50; cursor: pointer; overflow: hidden; }
-#nav-left { left: 0; }
+.page-content {
+  position: relative;
+  z-index: 1;
+  padding: 36px 32px 48px;
+  height: 100%;
+  overflow: hidden;
+  direction: rtl;
+}
+
+/* ── Chapter header ── */
+.chapter-header-page .page-content {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 48px 36px;
+}
+
+.chapter-top-rule {
+  width: 100%;
+  height: 0.5px;
+  background: #bbb;
+  margin-bottom: 24px;
+}
+
+.chapter-number {
+  font-family: 'Frank Ruhl Libre', serif;
+  font-size: 11px;
+  color: var(--red);
+  font-variant: small-caps;
+  letter-spacing: 3px;
+  font-weight: 700;
+  margin-bottom: 10px;
+  text-transform: uppercase;
+}
+
+.chapter-title {
+  font-family: 'Suez One', serif;
+  font-size: clamp(22px, 4vw, 36px);
+  color: var(--text-black);
+  line-height: 1.2;
+  margin-bottom: 12px;
+}
+
+.chapter-subtitle {
+  font-family: 'Frank Ruhl Libre', serif;
+  font-size: 13px;
+  color: var(--gray-mid);
+  font-weight: 300;
+  margin-bottom: 24px;
+}
+
+.chapter-bottom-rule {
+  width: 100%;
+  height: 0.5px;
+  background: var(--red);
+  opacity: 0.6;
+}
+
+/* ── Text page typography ── */
+.body-text {
+  font-family: 'Frank Ruhl Libre', serif;
+  font-size: 14px;
+  line-height: 1.7;
+  text-align: justify;
+  direction: rtl;
+}
+
+.verse-block {
+  margin-bottom: 14px;
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+}
+
+.verse-number {
+  color: var(--red);
+  font-weight: 700;
+  font-size: 12px;
+  min-width: 18px;
+  text-align: right;
+  padding-top: 2px;
+  flex-shrink: 0;
+}
+
+.verse-text {
+  flex: 1;
+  text-align: justify;
+}
+
+.callout-block {
+  border-top: 3px solid var(--red);
+  border-bottom: 3px solid var(--red);
+  padding: 14px 16px;
+  margin: 18px 0;
+  text-align: center;
+  font-family: 'Frank Ruhl Libre', serif;
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--text-black);
+  line-height: 1.6;
+}
+
+.italic-block {
+  font-style: italic;
+  color: var(--gray-dark);
+  margin: 12px 0;
+  padding-right: 14px;
+  border-right: 2px solid rgba(122,0,0,0.25);
+  font-size: 13px;
+  line-height: 1.65;
+}
+
+/* ── Page number ── */
+.page-number {
+  position: absolute;
+  bottom: 14px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 10px;
+  color: var(--gray-mid);
+  letter-spacing: 2px;
+  font-family: 'Frank Ruhl Libre', serif;
+  font-weight: 300;
+}
+
+/* ── Navigation dots ── */
+#chapter-dots {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 8px;
+  z-index: 100;
+}
+
+.chapter-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.18);
+  border: 1px solid rgba(255,255,255,0.12);
+  cursor: pointer;
+  transition: background 0.25s, transform 0.25s;
+}
+
+.chapter-dot.active {
+  background: var(--red);
+  border-color: var(--red-light);
+  transform: scale(1.3);
+}
+
+.chapter-dot:hover {
+  background: rgba(255,255,255,0.4);
+}
+
+/* ── Edit button ── */
+#edit-btn {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  width: 34px;
+  height: 34px;
+  background: rgba(20,20,20,0.9);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 6px;
+  color: rgba(255,255,255,0.35);
+  font-size: 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+  transition: color 0.2s, border-color 0.2s;
+}
+
+#edit-btn:hover {
+  color: rgba(255,255,255,0.7);
+  border-color: rgba(255,255,255,0.2);
+}
+
+/* ── Editor drawer ── */
+#editor-drawer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 60vh;
+  background: #141414;
+  border-top: 1px solid rgba(255,255,255,0.08);
+  z-index: 300;
+  display: flex;
+  flex-direction: column;
+  transform: translateY(100%);
+  transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+#editor-drawer.open {
+  transform: translateY(0);
+}
+
+#drawer-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 20px;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  flex-shrink: 0;
+}
+
+#drawer-header span {
+  font-family: 'Frank Ruhl Libre', serif;
+  font-size: 12px;
+  color: rgba(255,255,255,0.4);
+  letter-spacing: 2px;
+  direction: rtl;
+}
+
+#drawer-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.drawer-btn {
+  padding: 5px 14px;
+  border-radius: 4px;
+  border: 1px solid rgba(255,255,255,0.12);
+  background: transparent;
+  color: rgba(255,255,255,0.5);
+  font-size: 11px;
+  cursor: pointer;
+  font-family: 'Frank Ruhl Libre', serif;
+  transition: all 0.2s;
+}
+
+.drawer-btn:hover {
+  background: rgba(255,255,255,0.05);
+  color: rgba(255,255,255,0.8);
+}
+
+.drawer-btn.primary {
+  background: var(--red);
+  border-color: var(--red);
+  color: #fff;
+}
+
+.drawer-btn.primary:hover {
+  background: var(--red-light);
+}
+
+#json-editor {
+  flex: 1;
+  padding: 16px 20px;
+  background: transparent;
+  color: #d4d4d4;
+  font-family: 'Courier New', monospace;
+  font-size: 12px;
+  line-height: 1.6;
+  border: none;
+  resize: none;
+  outline: none;
+  direction: ltr;
+  text-align: left;
+}
+
+#editor-error {
+  padding: 8px 20px;
+  font-size: 11px;
+  color: #ff6b6b;
+  font-family: monospace;
+  flex-shrink: 0;
+  min-height: 24px;
+}
+
+/* ── Page navigation click zones ── */
+#nav-left  { left: 0; }
 #nav-right { right: 0; }
 
-.tap-ripple { position: absolute; width: 60px; height: 60px; border-radius: 50%; background: rgba(255,255,255,0.06); transform: translate(-50%,-50%) scale(0); animation: ripple 0.5s ease-out forwards; pointer-events: none; }
-@keyframes ripple { to { transform: translate(-50%,-50%) scale(4); opacity: 0; } }
+/* ── Loading state ── */
+#loading {
+  position: fixed;
+  inset: 0;
+  background: var(--black);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+  transition: opacity 0.6s;
+}
 
-#loading { position: fixed; inset: 0; background: var(--black); display: flex; align-items: center; justify-content: center; z-index: 999; transition: opacity 0.6s; }
-#loading.hidden { opacity: 0; pointer-events: none; }
-.loading-cross { color: var(--red); font-size: 32px; animation: pulse 2s ease-in-out infinite; }
-@keyframes pulse { 0%,100% { opacity: 0.3; } 50% { opacity: 1; } }
+#loading.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.loading-cross {
+  color: var(--red);
+  font-size: 32px;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 1; }
+}
+
+/* ── Progress bar ── */
+#progress-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 2px;
+  background: var(--red);
+  z-index: 500;
+  transition: width 0.4s ease;
+  box-shadow: 0 0 8px rgba(122, 0, 0, 0.6);
+}
+
+/* ── Tap ripple ── */
+#nav-left, #nav-right {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  width: 22%;
+  z-index: 50;
+  cursor: pointer;
+  overflow: hidden;
+}
+
+.tap-ripple {
+  position: absolute;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.06);
+  transform: translate(-50%, -50%) scale(0);
+  animation: ripple 0.5s ease-out forwards;
+  pointer-events: none;
+}
+
+@keyframes ripple {
+  to { transform: translate(-50%, -50%) scale(4); opacity: 0; }
+}
+
+/* ── Responsive ── */
+/* ── Safe area (iPhone notch / home indicator) ── */
+#chapter-dots {
+  bottom: max(20px, env(safe-area-inset-bottom, 20px));
+}
+
+#edit-btn {
+  bottom: max(20px, env(safe-area-inset-bottom, 20px));
+  left: max(20px, env(safe-area-inset-left, 20px));
+}
+
+#editor-drawer {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
 
 @media (max-width: 768px) {
-  #book-wrapper { transform: rotateX(2deg); }
-  #spine { width: 18px; }
-  #spine-title { font-size: 7px; }
-  .page-content { padding: 24px 20px 40px; }
-  .body-text { font-size: 13px; }
-  #nav-left, #nav-right { width: 25%; }
+  #book-wrapper {
+    transform: rotateX(2deg);
+  }
+
+  #spine {
+    width: 18px;
+  }
+
+  #spine-title {
+    font-size: 7px;
+  }
+
+  .page-content {
+    padding: 24px 20px 40px;
+  }
+
+  .body-text {
+    font-size: 13px;
+  }
+
+  #nav-left, #nav-right {
+    width: 25%;
+  }
 }
+
 @media (orientation: landscape) and (max-width: 900px) {
-  .page-content { padding: 18px 20px 32px; }
-  .body-text { font-size: 12px; line-height: 1.6; }
+  .page-content {
+    padding: 18px 20px 32px;
+  }
+
+  .body-text {
+    font-size: 12px;
+    line-height: 1.6;
+  }
 }
-</style>
+
+/* ── Hard cover edge effect ── */
+.page-cover-front {
+  box-shadow: inset -4px 0 12px rgba(0,0,0,0.5);
+}
+
+.page-cover-back {
+  box-shadow: inset 4px 0 12px rgba(0,0,0,0.5);
+}
+
+/* ── Cover extras ── */
+.cover-church {
+  font-family: 'Frank Ruhl Libre', serif;
+  font-size: 11px;
+  letter-spacing: 3px;
+  color: rgba(255,255,255,0.4);
+  margin-bottom: 10px;
+}
+.cover-year {
+  position: absolute;
+  bottom: 36px;
+  font-size: 10px;
+  color: rgba(255,255,255,0.28);
+  letter-spacing: 2px;
+  font-family: 'Frank Ruhl Libre', serif;
+}
+
+/* ── Dedication ── */
+.dedication-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  text-align: center;
+}
+.dedication-symbol {
+  font-size: 18px;
+  color: var(--red);
+  margin-bottom: 32px;
+  letter-spacing: 6px;
+}
+.dedication-line {
+  font-family: 'Frank Ruhl Libre', serif;
+  font-size: 15px;
+  line-height: 2.1;
+  color: var(--text-black);
+  font-weight: 400;
+}
+
+/* ── Body paragraph ── */
+.body-paragraph {
+  margin-bottom: 14px;
+  text-align: justify;
+}
+
+/* ── List items (outsource list) ── */
+.list-item-block {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 10px;
+  align-items: baseline;
+}
+.list-label {
+  color: var(--red);
+  font-weight: 700;
+  white-space: nowrap;
+  font-size: 13px;
+}
+.list-dash { color: var(--gray-mid); }
+.list-value { flex: 1; }
+
+/* ── Blessing ── */
+.blessing-content .blessing-title {
+  font-family: 'Suez One', serif;
+  font-size: 20px;
+  text-align: center;
+  margin: 10px 0 6px;
+  color: var(--text-black);
+}
+.blessing-cross {
+  text-align: center;
+  font-size: 16px;
+  color: var(--red);
+  margin-bottom: 6px;
+}
+.blessing-footer {
+  margin-top: 24px;
+  font-size: 10px;
+  color: var(--gray-mid);
+  text-align: center;
+  letter-spacing: 1px;
+  direction: rtl;
+}
+
+/* Table of contents page */
+.toc-page .page-content {
+  padding: 40px 36px;
+}
+
+.toc-title {
+  font-family: 'Suez One', serif;
+  font-size: 18px;
+  color: var(--text-black);
+  margin-bottom: 24px;
+  padding-bottom: 10px;
+  border-bottom: 0.5px solid #bbb;
+}
+
+.toc-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: 8px 0;
+  border-bottom: 0.5px dashed #ddd;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.toc-item:hover {
+  color: var(--red);
+}
+
+.toc-chapter-num {
+  color: var(--red);
+  font-size: 12px;
+  font-weight: 700;
+  margin-left: 8px;
+}
+
+.toc-chapter-title {
+  flex: 1;
+  font-size: 14px;
+}
+
+.toc-page-num {
+  font-size: 11px;
+  color: var(--gray-mid);
+}
+
+  </style>
 </head>
 <body>
 
 <div id="progress-bar" style="width:0%"></div>
-
 <div id="loading"><div class="loading-cross">✠</div></div>
 
 <div id="scene">
   <div id="book-wrapper">
     <div id="flip-book"></div>
-    <div id="spine"><span id="spine-title">הכתבים הקדושים</span></div>
+    <div id="spine"><span id="spine-title">הכתבים הקדושים · כנסיית הקראנץ׳</span></div>
   </div>
 </div>
 
@@ -213,112 +827,320 @@ body::before {
 </div>
 
 <script>
-// ── CONTENT ──────────────────────────────────────────────────────────────────
 const BOOK_CONTENT = {
   title: "הכתבים הקדושים",
-  subtitle: "ספר הגילוי הראשון",
-  author: "הכותב הנסתר",
+  subtitle: "הצד המואר של הפודיז",
+  church: "כנסיית הקראנץ׳",
+  year: "שנת השלושים ושבע לעקרוני",
+  dedication: [
+    "מוגש לעקרוני",
+    "לרגל שלושים ושבע שנות חיפוש",
+    "אחר הביס המושלם"
+  ],
+  preface: {
+    title: "דבר הקורא",
+    pages: [
+      {
+        type: "text",
+        content: [
+          { type: "paragraph", text: "ידוע כי העקרוני אינו מאמין בכתבים קדושים." },
+          { type: "italic", text: "זה אינו משנה דבר." },
+          { type: "paragraph", text: "הספר שלפניך לא נתבקש. לא אושר. לא קיבל את ברכתו. הוא הרי היה עומד מעליך, מצביע על השגיאות, מחלק הוראות." },
+          { type: "paragraph", text: "ועדיין יש באמת בספר." },
+          { type: "paragraph", text: "כנסיית הקראנץ׳ אינה מבקשת את אמונתך. היא מבקשת שתאכל טעים. שתסכים רק לביסים מדויקים. ושלעולם, בשום נסיבות, לא תזמין משהו מושי ורך במודע." },
+          { type: "italic", text: "השאר יבוא מעצמו." }
+        ]
+      }
+    ]
+  },
   chapters: [
     {
       id: 1,
-      title: "ראשית הדברים",
+      title: "בראשית",
       pages: [
-        {
-          type: "chapter-header",
-          chapterNumber: "א",
-          title: "ראשית הדברים",
-          subtitle: "על טבע האמת הנצחית"
-        },
+        { type: "chapter-header", chapterNumber: "א׳", title: "בראשית", subtitle: "" },
         {
           type: "text",
           content: [
-            { type: "verse", number: 1, text: "בתחילה לא היה דבר, ובתוך האפס גנוז היה הכל. האמת אינה נולדת — היא מתגלה, כפי שהאור מתגלה כשמסירים את הצעיף מפני הנר." },
-            { type: "verse", number: 2, text: "המבין יבין, והאטום ילך באטמותו. אין שליח שיביא את האמת לאדם שעוד לא מוכן לקבלה — כשם שאין ביכולת אדם לראות שמש שעינו עוד מלאה בחשכה." },
-            { type: "callout", text: "האמת אינה מצב של ידיעה — היא מצב של הוויה. אי אפשר לדעת אותה מבחוץ." },
-            { type: "verse", number: 3, text: "כתבים אלה אינם מלמדים — הם מזכירים. כל מה שכתוב כאן ידעת כבר, לפני שנולדת, לפני שנשמתך התעטפה בבשר. כעת אנו מסירים את שכבות השכחה אחת אחת." },
-            { type: "verse", number: 4, text: "הקורא שמוכן יראה את הדברים מאחורי הדברים. הקורא שאינו מוכן יראה רק מילים על נייר — ואף זה חלק מן הסדר." },
-            { type: "italic", text: "כי לא כל נשמה זכתה לגילוי בזמנה." }
+            { type: "paragraph", text: "בראשית היה הבלגן. החלטות פיננסיות גרועות. חומוס שמקורו מפוקפק." },
+            { type: "paragraph", text: "ואל העולם הזה הגיח העקרוני, ויבט בו, וימצאהו תת-אופטימלי." },
+            { type: "paragraph", text: "הוא הקיץ כל יום עם שחר, בשעת הגמדים. לפני שהעיר הייתה נזכרת בעצמה." },
+            { type: "paragraph", text: "לא מפני שמישהו ביקש אלא מפני שהעבודה הייתה שם. מהמיטה כמובן, הוא בנה וניהל עולמות." },
+            { type: "italic", text: "ואלוהים התעניין מיד." }
           ]
         },
         {
           type: "text",
           content: [
-            { type: "verse", number: 5, text: "יש סדר בכל הדברים, גם כשנראה שאין סדר. הכאוס עצמו הוא ביטוי של חוק גבוה יותר, שעיני הבשר אינן יכולות לתפוס. רק מי שנכנס פנימה — מי שעבר את השערים — מסוגל לראות כיצד הכל מחובר." },
-            { type: "verse", number: 6, text: "החיים שלך אינם מקריים. כל פגישה, כל כאב, כל שמחה — חרוטים מראש בספר שנכתב לפני שנוצר העולם. ועדיין — לך ניתנה הבחירה. זוהי הפרדוקסה הגדולה: כל קבוע, הכל חופשי." },
-            { type: "callout", text: "הבחירה האמיתית אינה בין שתי דרכים — היא בין השינה לבין ההתעוררות." },
-            { type: "verse", number: 7, text: "מי שמבין זאת עד תומו אינו מפחד עוד. הפחד שייך לאדם שחי בתוך הזמן, שחושב שהסיום הוא הסוף. אבל אתה — אם קראת עד כאן — כבר יודע שאין סיום, יש רק מעבר." }
+            { type: "paragraph", text: "ותבוא המכה הראשונה: מגפה. העקרוני חישב מחדש. ויבן שוב." },
+            { type: "paragraph", text: "ותכה המכה השניה: מהפכה המשפטית. העקרוני חישב מחדש. ויבן שוב." },
+            { type: "paragraph", text: "ותכה המכה השלישית: מלחמה. העקרוני חישב מחדש. ויבן שוב." },
+            { type: "paragraph", text: "אין הכרעה עדיין אם אלוהים בוחן אותו, או שפשוט גילה עניין מתמשך בצפייה בו עובד." },
+            { type: "italic", text: "בכל מקרה, העקרוני לא שינה את עמדתו." },
+            { type: "paragraph", text: "יש לו נתונים. יש לו תוכנית. הוא ינהל את המדינה בבוא העת. אלוהים מוזמן לנסות משהו אז." }
           ]
         }
       ]
     },
     {
       id: 2,
-      title: "שערי הבינה",
+      title: "תורת ה-Outsource",
       pages: [
-        {
-          type: "chapter-header",
-          chapterNumber: "ב",
-          title: "שערי הבינה",
-          subtitle: "על הדרך אל תוך הדרך"
-        },
+        { type: "chapter-header", chapterNumber: "ב׳", title: "תורת ה-Outsource", subtitle: "" },
         {
           type: "text",
           content: [
-            { type: "verse", number: 1, text: "יש שבעה שערים, ובכל שער עומד שומר. השומרים אינם אויבים — הם מסננים. הם מוודאים שאתה מוכן לצעד הבא. מי שמנסה לדלג על שער ייפול, כי הקרקע מאחוריו אינה יציבה עדיין." },
-            { type: "verse", number: 2, text: "השער הראשון הוא שער הכנות. לא מספיק לרצות — צריך להיות מוכן. ההכנה אינה לימוד, אינה שינון של מושגים. ההכנה היא ריקון: לרוקן את הכוס מן המלא כדי שניתן יהיה למלאה מחדש." },
-            { type: "italic", text: "\"הכוס הריקה מקבלת — הכוס המלאה דוחה.\" — מתוך מסורת קדומה" },
-            { type: "verse", number: 3, text: "רוב בני האדם מגיעים לשערים כשהם עמוסים בדעות, בפחדים, בציפיות. הם מנסים לפרוץ פנימה עם כל המטען שלהם. זו הטעות. את השערים עוברים בידיים ריקות, ברגליים קלות." },
-            { type: "callout", text: "ריקון אינו אובדן — הוא הכנה לשפע אמיתי." },
-            { type: "verse", number: 4, text: "השער השני הוא שער הדממה. לא שתיקה חיצונית — שתיקה פנימית. המוח לעולם לא שקט מעצמו; אבל מתחת לרעש, יש מקום שתמיד שקט. הדרך לשם עוברת דרך הכאב, לא מסביבו." }
+            { type: "paragraph", text: "העקרוני למד דבר אחד בחמש עשרה שנות חינוך פיננסי:" },
+            { type: "callout", text: "אנשים לא רוצים להיות מחונכים. הם רוצים שזה פשוט יקרה." },
+            { type: "paragraph", text: "הוא הפנים זאת. הוא בנה חברה סביב זה. ואז יישם את אותו עיקרון על חייו שלו." },
+            { type: "listitem", label: "בישול", text: "יש שפים." },
+            { type: "listitem", label: "כביסה", text: "יש כביסי." },
+            { type: "listitem", label: "ניקיון", text: "יש מנקים." },
+            { type: "listitem", label: "פיננסים", text: "יש Better." },
+            { type: "listitem", label: "שאר הדברים", text: "יש קלוד." }
           ]
         },
         {
           type: "text",
           content: [
-            { type: "verse", number: 5, text: "השער השלישי הוא שער הגוף. הגוף אינו כלא הנשמה — הוא המקדש שלה. מי שמתעלל בגופו, מי שמזניח אותו, מי שמתבייש בו — עוד לא הבין מדוע ניתן לו. הגוף הוא הכלי הנדיר ביותר שקיבלת." },
-            { type: "verse", number: 6, text: "השערים הרביעי, החמישי, השישי — הם שערי הקשר: עם הזולת, עם הקהילה, עם הכלל. אדם בודד אינו יכול להגיע לאמת המלאה. האמת דורשת עדים, דורשת שיקוף, דורשת חיכוך עם נשמות אחרות." },
-            { type: "callout", text: "הנשמה מתגלה בתוך מערכת יחסים — לא בבדידות." },
-            { type: "verse", number: 7, text: "השער השביעי הוא שער הגילוי. מי שמגיע אליו אינו יכול לתאר מה הוא ראה — לא מפני שאסור לו, אלא מפני שהשפה אינה מסוגלת להכיל את זה. הגילוי הוא ניסיון אישי, בלתי ניתן להעברה — ניתן רק לרמוז עליו." }
+            { type: "italic", text: "רק חובבנים עושים הכל בעצמם." },
+            { type: "paragraph", text: "העקרוני אינו נופל בדברים שאינם בתחום מומחיותו. אין סיבה. יש אנשים שעושים את זה טוב ממנו." },
+            { type: "paragraph", text: "הוא מפנה את האנרגיה שלו למה שהוא טוב בו." },
+            { type: "italic", text: "וזה סוד ההצלחה שלו." }
           ]
         }
       ]
     },
     {
       id: 3,
-      title: "חוקי הנשמה",
+      title: "עשרת הדיברות",
       pages: [
-        {
-          type: "chapter-header",
-          chapterNumber: "ג",
-          title: "חוקי הנשמה",
-          subtitle: "מה שלא ניתן להפר"
-        },
+        { type: "chapter-header", chapterNumber: "ג׳", title: "עשרת הדיברות", subtitle: "" },
         {
           type: "text",
           content: [
-            { type: "verse", number: 1, text: "יש חוקים שאדם יכול לשבור — וישנם חוקים שאדם אינו יכול לשבור, רק להיבנות עליהם. ההבדל בין השניים הוא ההבדל בין תקנות שעשו בני אדם לבין חוקים שנקבעו לפני שנוצר הזמן." },
-            { type: "verse", number: 2, text: "החוק הראשון: מה שנותן — מקבל. לא בהכרח מאותו מקור, לא בהכרח באותו זמן — אבל תמיד. אין פעולה ללא תגובה ברמת הנשמה. זה אינו עונש ואינו פרס — זוהי פיסיקה של המציאות הפנימית." },
-            { type: "italic", text: "כי היקום אינו שופט — הוא מחזיר." },
-            { type: "verse", number: 3, text: "החוק השני: כל מה שמוסתר מגיע לאור. לא חייב להיות בחייך — אבל האמת מוצאת דרכה תמיד. לא מטעמי עונש; זה פשוט טבע האמת. אמת אינה יכולה להישאר קבורה לנצח." },
-            { type: "callout", text: "מה שאתה מסתיר מן הזולת — אתה חי עמו בסתר. הסוד שאתה נושא הוא הנטל הכבד ביותר." },
-            { type: "verse", number: 4, text: "החוק השלישי: כל נשמה מושכת אליה את מה שהיא. לא את מה שהיא רוצה — את מה שהיא. לכן שינוי חיצוני ללא שינוי פנימי הוא אשליה. לכן אדם שלא שינה את עצמו ייפגש שוב ושוב באותם אנשים, אותם מצבים, אותם כאבים — עד שילמד." }
+            { type: "verse", number: "❶", text: "לא תתווכח ללא נתונים. דעה היא רעש. נתון הוא עובדה. כשהעקרוני מדבר בוודאות — הוא כבר עשה את החישוב." },
+            { type: "verse", number: "❷", text: "לא תמיר מרכיב. אם המתכון דורש משהו ספציפי — תלך לחנות אחרת. ואז לאחרת. אין תחליפים. יש רק הדבר הנכון." },
+            { type: "verse", number: "❸", text: "לא תבשל ברשלנות בנוכחותו. הוא יגיד משהו. הוא יגיד שוב. זו מתנה. תקבל אותה." },
+            { type: "verse", number: "❹", text: "תשאל את המלצרית מה הכי טוב. ׳הכל טוב׳ אינה תשובה. זו תהום. תנסה שוב." },
+            { type: "verse", number: "❺", text: "תחלוק את הביס הטעים. אם זה טוב — האנשים שאתה אוהב חייבים לטעום. זו חובה, לא נדיבות." }
           ]
         },
         {
           type: "text",
           content: [
-            { type: "verse", number: 5, text: "החוק הרביעי: הזמן אינו ישר. מה שנראה כסיום הוא לעיתים התחלה, ומה שנראה כאמצע הוא לעיתים שיא. מי שחי בזמן הליניארי חי ברבע מהמציאות. הנשמה חיה מחוץ לזמן, גם כשהגוף נמצא בתוכו." },
-            { type: "verse", number: 6, text: "החוק החמישי: אין מקריות. גם המפגשים שנראים שוליים, גם האירועים הזניחים — הם חלק מרצף מכוון. לא כל דבר ניתן להסבר מיידי; אבל הכל ניתן להבנה, כשיש מספיק פרספקטיבה." },
-            { type: "callout", text: "ראה את חייך כסרט שצולם מראש — ועדיין, אתה מי שמשחק בו בזמן אמת." },
-            { type: "verse", number: 7, text: "ואלה הם חמשת החוקים. יש נוספים — מורכבים יותר, עמוקים יותר — שנחשפים רק למי שעיכל את אלה. אין קיצורי דרך בדרך הזאת. כל צעד צריך להיות אמיתי, כל הבנה צריכה להיות חיה בתוכך — לא שמורה רק בראש." }
+            { type: "verse", number: "❻", text: "הרכב את הביס כהלכה, ביחסים הנכונים. ביס ללא הארכיטקטורה הנכונה הוא רק טיוטה." },
+            { type: "verse", number: "❼", text: "לך לחדר הכושר. תסבול. תחזור בעוד יומיים." },
+            { type: "verse", number: "❽", text: "תטעה לפעמים — בפרטיות, בלי עדים, בלי תיעוד." },
+            { type: "verse", number: "❾", text: "לעולם לא תאכל אפונה. ולא בננה. מושי הינו מרקם השטן." },
+            { type: "verse", number: "❿", text: "הדלק נרות חנוכה כאשר אמך תבקש. העקרוני אינו מאמין בטקס הפגני הזה. אבל הוא עושה זאת בכל זאת. זו אחת מתכונותיו הנאצלות ביותר — והוא מעדיף שלא נדון בכך." }
+          ]
+        }
+      ]
+    },
+    {
+      id: 4,
+      title: "הצד האפל",
+      pages: [
+        { type: "chapter-header", chapterNumber: "ד׳", title: "הצד האפל", subtitle: "" },
+        {
+          type: "text",
+          content: [
+            { type: "paragraph", text: "קיים בעולם הקולינרי מעמד של חוטאים מסוכן יותר מן הבורים." },
+            { type: "paragraph", text: "את הבורים ניתן לחנך. את אלה — לא." },
+            { type: "paragraph", text: "הם אוכלים במקומות שנחשבים לטובים, אובייקטיבית. הם מגיעים. הם אוכלים. הם נהנים." },
+            { type: "italic", text: "ובכל זאת." },
+            { type: "paragraph", text: "הם לא מבינים שהמקומות האלה אינם טובים מספיק. הצד האפל אינו יודע זאת. הם מצלמים. הם משאירים חמישה כוכבים. הם ממליצים לאנשים שהם טוענים לאהוב." },
+            { type: "callout", text: "מעגל של בינוניות המועבר מדור לדור." }
+          ]
+        },
+        {
+          type: "text",
+          content: [
+            { type: "paragraph", text: "העקרוני אינו כועס. הוא הגיע למסקנה שכעס לא יועיל." },
+            { type: "italic", text: "הוא מרחם." },
+            { type: "callout", text: "לא ניתן להעניק לאדם טעם. ניתן רק לרדות בו, ולקוות." }
+          ]
+        }
+      ]
+    },
+    {
+      id: 5,
+      title: "המערכת הקדושה",
+      pages: [
+        { type: "chapter-header", chapterNumber: "ה׳", title: "המערכת הקדושה", subtitle: "" },
+        {
+          type: "text",
+          content: [
+            { type: "paragraph", text: "העקרוני מנהל תיעוד. המתודולוגיה קדושה, הכנסייה שומרת עליה." },
+            { type: "paragraph", text: "כל מקום חדש — היפותזה הדורשת בדיקה. העקרוני מגיע ללא סנטימנטים. ושופט." },
+            { type: "paragraph", text: "השאלה הראשונה תמיד לצוות:" },
+            { type: "callout", text: "מה הכי פופולרי כאן?" },
+            { type: "paragraph", text: "הם עובדים כאן. הם יודעים. הוא סומך על המומחיות המקומית." },
+            { type: "paragraph", text: "אם הם אומרים ׳הכל טוב׳ — העקרוני חווה רגע של אבל. מתאושש. מנסה שוב. הוא ניסה בבנגקוק. הוא ניסה בווייטנאם. מעבר למחסום שפה. עם פנטומימה, עם נחישות." }
+          ]
+        },
+        {
+          type: "text",
+          content: [
+            { type: "italic", text: "הידע שם. הוא יגיע אליו." },
+            { type: "paragraph", text: "אם הם אומרים ׳תגיד לי מה אתה אוהב׳ — העקרוני שותק." },
+            { type: "italic", text: "הוא אינו שוכח." },
+            { type: "paragraph", text: "הדירוג, לאחר שניתן — ברזל. ניתן לשנותו על בסיס ראיות בלבד." },
+            { type: "italic", text: "לעולם לא על בסיס טיעון." }
+          ]
+        }
+      ]
+    },
+    {
+      id: 6,
+      title: "הרביעייה הקדושה",
+      pages: [
+        { type: "chapter-header", chapterNumber: "ו׳", title: "הרביעייה הקדושה", subtitle: "" },
+        {
+          type: "text",
+          content: [
+            { type: "paragraph", text: "העקרוני, שאינו מקבל פחות ממצוינות, חוזר לאותם ארבעה מוסדות תכופות." },
+            { type: "italic", text: "לא מהרגל. מוודאות." },
+            { type: "italic", text: "הוא כבר פתר את הבעיה הזאת. הוא אינו פותח מחדש בעיות פתורות." },
+            { type: "verse", number: "❶", text: "הולשטיין. תמיד צ׳יזבורגר, רק את הנכון. העקרוני אינו מתנסה. ניסויים הם נחלת חסרי הוודאות." },
+            { type: "verse", number: "❷", text: "הקוסם. דבר שהגיע לשלמותו. אינו זקוק להסבר." },
+            { type: "verse", number: "❸", text: "האוגוסטינר. קר, נכון ומדויק. פעם בשנה — עלייה לרגל לאוקטוברפסט. החג הדתי היחיד שהכנסייה מציינת." },
+            { type: "verse", number: "❹", text: "שלמה ודורון. בימי שישי הקדושים. הסטנדרט ידוע לעקרוני ולאלוהים, בסדר הזה." },
+            { type: "italic", text: "העקרוני אינו מכין אף אחד מן הנ״ל. הוא מקבל. זו חלוקת העבודה הנכונה." }
+          ]
+        }
+      ]
+    },
+    {
+      id: 7,
+      title: "השקוצים",
+      pages: [
+        { type: "chapter-header", chapterNumber: "ז׳", title: "השקוצים", subtitle: "" },
+        {
+          type: "text",
+          content: [
+            { type: "callout", text: "מושי הוא מרקם השטן." },
+            { type: "paragraph", text: "זו אינה העדפה. זו עמדה. לבחור ברך כאשר הקראנץ׳ קיים — זו הצהרה." },
+            { type: "italic", text: "ההצהרה אינה טובה." },
+            { type: "verse", number: "❶", text: "הבננה. רכה לאורכה. ממשיכה להחמיר ככל שהיא מבשילה. אובייקט שמחמיר עם הזמן. לא יאכל." },
+            { type: "verse", number: "❷", text: "האפונה. עגולה במושיותה. עצמאית בכישלונה. דמיינו משהו שכל מהותו הוא אכזבה. זוהי האפונה." },
+            { type: "verse", number: "❸", text: "הרך, בכל צורותיו ותחפושותיו. הוא יזוהה. הוא יוסר. אין רחמים." }
+          ]
+        }
+      ]
+    },
+    {
+      id: 8,
+      title: "ההקרבה הקדושה",
+      pages: [
+        { type: "chapter-header", chapterNumber: "ח׳", title: "ההקרבה הקדושה", subtitle: "" },
+        {
+          type: "text",
+          content: [
+            { type: "paragraph", text: "זה קורה פעמיים בשבוע. העקרוני נכנס זקוף. יוצא חיוור." },
+            { type: "paragraph", text: "׳הרג אותי, הרג אותי׳ הוא אומר לא בתלונה. בדיווח." },
+            { type: "paragraph", text: "מה שמניע אותו לחזור אינו רצון. הוא תמיד הלך. הוא תמיד ילך. לא מפני שהוא רוצה." },
+            { type: "italic", text: "הוא מעולם לא רצה." }
+          ]
+        },
+        {
+          type: "text",
+          content: [
+            { type: "paragraph", text: "לפני שנים, קבעו הרופאים כי עצמותיו של העקרוני פריכות. כמו קרקר יקר ערך. הומלץ על אימון גופני." },
+            { type: "paragraph", text: "העקרוני אינו זוכר זאת, כמובן. ׳אני עושה את זה בשבילך׳, טוען בתוקף." },
+            { type: "paragraph", text: "העקרוני מגיע. מתאמן. סובל בשקט דיפלומטי. הוא אינו מתלונן בזמן האימון. הוא שומר את זה לסיום." },
+            { type: "paragraph", text: "הציפוריים נושאות אותו הביתה. אל המיטה. אל הלפטופ. אל כל מה שטוב." },
+            { type: "italic", text: "והעצמות, פחות פריכות מאתמול." }
+          ]
+        }
+      ]
+    },
+    {
+      id: 9,
+      title: "מזגי האוויר",
+      pages: [
+        { type: "chapter-header", chapterNumber: "י׳", title: "מזגי האוויר", subtitle: "" },
+        {
+          type: "text",
+          content: [
+            { type: "paragraph", text: "העקרוני לא בודק את מזג האוויר. הוא צופה בו." },
+            { type: "paragraph", text: "בטלוויזיה, הוא מעביר את כל מה שלא מעניין אותו. עוצר בתחזית. זה לא מידע. זו התוכנית." },
+            { type: "paragraph", text: "צחי מבין אותו. שניהם יודעים את מה שאחרים מפספסים —" },
+            { type: "italic", text: "העתיד ניתן לחיזוי." },
+            { type: "paragraph", text: "רק צריך את הכלים הנכונים. ואת האיש הנכון." },
+            { type: "paragraph", text: "כשצחי מתרגש — העקרוני מקשיב. כשצחי אומר מעיל — העקרוני לובש מעיל. ללא ויכוח. באמונה שלמה." }
+          ]
+        }
+      ]
+    },
+    {
+      id: 10,
+      title: "הנחש הספרדי",
+      pages: [
+        { type: "chapter-header", chapterNumber: "ט׳", title: "הנחש הספרדי", subtitle: "הנחש והפודל" },
+        {
+          type: "text",
+          content: [
+            { type: "paragraph", text: "העקרוני לא רעב. הוא כמעט אף פעם לא רעב. זו לא בעיה. זו זהות." },
+            { type: "paragraph", text: "העקרוני אוכל פעם ביום. הוא גאה בזה." },
+            { type: "paragraph", text: "הוא מסביר שהוא ספרדי. שזה תרבותי." },
+            { type: "paragraph", text: "הכנסייה כבר יודעת: הארוחה מגיעה בשעתה. אחת גדולה ולאחריה כיבוי מערכות. עיכול של עשרים וארבע שעות." },
+            { type: "paragraph", text: "מרגע זה העולם ממשיך ללא השתתפותו הקולינרית." }
+          ]
+        }
+      ]
+    },
+    {
+      id: 11,
+      title: "המנוחה הקדושה",
+      pages: [
+        { type: "chapter-header", chapterNumber: "י״א", title: "המנוחה הקדושה", subtitle: "" },
+        {
+          type: "text",
+          content: [
+            { type: "paragraph", text: "העקרוני הוא איש נתונים ומשמעת. אדם של עמדות חזקות, מערכת דירוג פרטית, מדיניות ברורה למדינה ודעה מאוד ספציפית על הקראנץ׳." },
+            { type: "paragraph", text: "אך כשהוא פצוץ, הוא שייך לפבלו." },
+            { type: "paragraph", text: "פבלו לא מוזמן. לא מתבקש. הוא פשוט יודע. בוחר את הבטן. עושה עבאדי, מחמם. והאיש שתמיד בשליטה" },
+            { type: "italic", text: "מתמסר, ואינו זז." },
+            { type: "callout", text: "זהו התחום היחיד שבו שליטתו נמסרת מרצון, לחלוטין." }
+          ]
+        }
+      ]
+    },
+    {
+      id: 12,
+      title: "הנבואה",
+      pages: [
+        { type: "chapter-header", chapterNumber: "י״ב", title: "הנבואה", subtitle: "" },
+        {
+          type: "text",
+          content: [
+            { type: "paragraph", text: "וישאלו את העקרוני — מה הלאה?" },
+            { type: "italic", text: "ויאמר: פוליטיקה." },
+            { type: "paragraph", text: "אלוהים, שכבר מכיר את הדפוס, החל להתארגן." }
           ]
         }
       ]
     }
-  ]
+  ],
+  blessing: {
+    title: "ברכת הסיום",
+    footer: "כנסיית הקראנץ׳  ·  הצד המואר של הפודיז  ·  שנת השלושים ושבע לעקרוני",
+    content: [
+      { type: "paragraph", text: "שהחומוס שלך יהיה תמיד נכון." },
+      { type: "paragraph", text: "שהמלצרית תדע תמיד מה הכי טוב — ותגיד." },
+      { type: "paragraph", text: "שכל ביס יורכב באהבה ויכנס ויוגש ישר לפה." },
+      { type: "paragraph", text: "שמיטתך תישאר המשרד הטוב ביותר בארץ." },
+      { type: "paragraph", text: "שאלוהים יתעסק במשהו אחר ויאפשר לקדם קצת עבודה." },
+      { type: "paragraph", text: "שפבלו תמיד ימצא את בטנך חמה ♥︎ אחרי אוכל טעים." },
+      { type: "italic", text: "מזל טוב" }
+    ]
+  }
 };
 
-// ── APP ───────────────────────────────────────────────────────────────────────
+/* global BOOK_CONTENT, St */
+
 class HebrewBook {
   constructor() {
     this.content = window.bookContent || BOOK_CONTENT;
@@ -342,21 +1164,44 @@ class HebrewBook {
     this._hideLoader();
   }
 
+  /* ── page list ── */
+
   _buildPageList() {
     this.pageList = [];
-    let innerPageNum = 1;
+    let n = 1;
+
     this.pageList.push({ type: 'cover-front', data: this.content });
+
+    if (this.content.dedication) {
+      this.pageList.push({ type: 'dedication', data: this.content });
+    }
+
+    if (this.content.preface) {
+      this.pageList.push({ type: 'preface-header', data: this.content.preface });
+      this.content.preface.pages.forEach(pg => {
+        this.pageList.push({ type: 'text', data: pg, pageNum: n++ });
+      });
+    }
+
     this.pageList.push({ type: 'toc', data: this.content });
+
     this.content.chapters.forEach((ch) => {
       this.chapterPageMap[ch.id] = this.pageList.length;
       ch.pages.forEach((pg) => {
         const entry = { type: pg.type === 'chapter-header' ? 'chapter-header' : 'text', data: pg };
-        if (pg.type !== 'chapter-header') entry.pageNum = innerPageNum++;
+        if (pg.type !== 'chapter-header') entry.pageNum = n++;
         this.pageList.push(entry);
       });
     });
+
+    if (this.content.blessing) {
+      this.pageList.push({ type: 'blessing', data: this.content.blessing });
+    }
+
     this.pageList.push({ type: 'cover-back', data: this.content });
   }
+
+  /* ── DOM rendering ── */
 
   _renderAllPages() {
     const container = document.getElementById('flip-book');
@@ -370,45 +1215,112 @@ class HebrewBook {
     div.className = 'page';
     div.dataset.pageIndex = idx;
     switch (entry.type) {
-      case 'cover-front': div.classList.add('page-cover','page-cover-front'); div.innerHTML = this._tmplCoverFront(entry.data); break;
-      case 'cover-back':  div.classList.add('page-back-cover');               div.innerHTML = this._tmplCoverBack(entry.data);  break;
-      case 'toc':         div.classList.add('page-inner','toc-page');         div.innerHTML = this._tmplTOC(entry.data);        break;
-      case 'chapter-header': div.classList.add('page-inner','chapter-header-page'); div.innerHTML = this._tmplChapterHeader(entry.data); break;
-      case 'text':        div.classList.add('page-inner');                    div.innerHTML = this._tmplTextPage(entry.data, entry.pageNum); break;
+      case 'cover-front':    div.classList.add('page-cover', 'page-cover-front');       div.innerHTML = this._tmplCoverFront(entry.data);   break;
+      case 'cover-back':     div.classList.add('page-back-cover');                       div.innerHTML = this._tmplCoverBack();               break;
+      case 'dedication':     div.classList.add('page-inner', 'dedication-page');         div.innerHTML = this._tmplDedication(entry.data);    break;
+      case 'preface-header': div.classList.add('page-inner', 'chapter-header-page');    div.innerHTML = this._tmplPrefaceHeader(entry.data); break;
+      case 'toc':            div.classList.add('page-inner', 'toc-page');               div.innerHTML = this._tmplTOC(entry.data);           break;
+      case 'chapter-header': div.classList.add('page-inner', 'chapter-header-page');    div.innerHTML = this._tmplChapterHeader(entry.data); break;
+      case 'text':           div.classList.add('page-inner');                            div.innerHTML = this._tmplTextPage(entry.data, entry.pageNum); break;
+      case 'blessing':       div.classList.add('page-inner', 'blessing-page');          div.innerHTML = this._tmplBlessing(entry.data);     break;
     }
     return div;
   }
 
+  /* ── templates ── */
+
   _tmplCoverFront(d) {
-    return `<div class="cover-cross">✠</div><div class="cover-title">${d.title}</div><div class="cover-rule"></div><div class="cover-subtitle">${d.subtitle}</div><div class="cover-rule"></div><div class="cover-author">${d.author}</div>`;
+    return `
+      <div class="cover-church">${this._esc(d.church || '')}</div>
+      <div class="cover-cross">✠</div>
+      <div class="cover-title">${this._esc(d.title)}</div>
+      <div class="cover-rule"></div>
+      <div class="cover-subtitle">${this._esc(d.subtitle)}</div>
+      <div class="cover-rule"></div>
+      <div class="cover-year">${this._esc(d.year || '')}</div>
+    `;
   }
+
   _tmplCoverBack() {
     return `<div class="back-cover-seal"><span>✠</span></div>`;
   }
+
+  _tmplDedication(d) {
+    const lines = d.dedication.map(l => `<div class="dedication-line">${this._esc(l)}</div>`).join('');
+    return `<div class="page-content dedication-content">
+      <div class="dedication-symbol"> · ✠ · </div>
+      ${lines}
+    </div>`;
+  }
+
+  _tmplPrefaceHeader(preface) {
+    return `<div class="page-content">
+      <div class="chapter-top-rule"></div>
+      <div class="chapter-number">הקדמה</div>
+      <div class="chapter-title">${this._esc(preface.title)}</div>
+      <div class="chapter-bottom-rule"></div>
+    </div>`;
+  }
+
   _tmplTOC(data) {
-    const items = data.chapters.map((ch, i) => {
-      const priorPages = data.chapters.slice(0,i).reduce((s,c)=>s+c.pages.length,0);
-      const pageNum = 2 + priorPages + 1;
-      return `<div class="toc-item" data-chapter="${ch.id}"><span class="toc-chapter-num">${this._numToHebrew(i+1)}</span><span class="toc-chapter-title">${ch.title}</span><span class="toc-page-num">${pageNum}</span></div>`;
-    }).join('');
-    return `<div class="page-content"><div class="toc-title">תוכן עניינים</div>${items}<div class="page-number">—</div></div>`;
+    const items = data.chapters.map((ch, i) => `
+      <div class="toc-item" data-chapter="${ch.id}">
+        <span class="toc-chapter-num">${ch.pages[0].chapterNumber || ''}</span>
+        <span class="toc-chapter-title">${this._esc(ch.title)}</span>
+      </div>
+    `).join('');
+    return `<div class="page-content">
+      <div class="toc-title">תוכן עניינים</div>
+      ${items}
+      <div class="page-number">—</div>
+    </div>`;
   }
+
   _tmplChapterHeader(pg) {
-    return `<div class="page-content"><div class="chapter-top-rule"></div><div class="chapter-number">פרק ${pg.chapterNumber}</div><div class="chapter-title">${pg.title}</div><div class="chapter-subtitle">${pg.subtitle||''}</div><div class="chapter-bottom-rule"></div></div>`;
+    return `<div class="page-content">
+      <div class="chapter-top-rule"></div>
+      <div class="chapter-number">פרק ${this._esc(pg.chapterNumber)}</div>
+      <div class="chapter-title">${this._esc(pg.title)}</div>
+      ${pg.subtitle ? `<div class="chapter-subtitle">${this._esc(pg.subtitle)}</div>` : ''}
+      <div class="chapter-bottom-rule"></div>
+    </div>`;
   }
+
   _tmplTextPage(pg, pageNum) {
-    const blocks = (pg.content||[]).map(b=>this._tmplBlock(b)).join('');
-    return `<div class="page-content body-text">${blocks}<div class="page-number">${pageNum}</div></div>`;
+    const blocks = (pg.content || []).map(b => this._tmplBlock(b)).join('');
+    return `<div class="page-content body-text">${blocks}${pageNum ? `<div class="page-number">${pageNum}</div>` : ''}</div>`;
   }
+
+  _tmplBlessing(b) {
+    const blocks = (b.content || []).map(bl => this._tmplBlock(bl)).join('');
+    return `<div class="page-content body-text blessing-content">
+      <div class="chapter-top-rule"></div>
+      <div class="blessing-title">${this._esc(b.title)}</div>
+      <div class="blessing-cross">✠</div>
+      <div class="chapter-bottom-rule" style="margin-bottom:20px"></div>
+      ${blocks}
+      <div class="blessing-footer">${this._esc(b.footer || '')}</div>
+    </div>`;
+  }
+
   _tmplBlock(b) {
-    switch(b.type) {
-      case 'verse':    return `<div class="verse-block"><span class="verse-number">${b.number}</span><span class="verse-text">${this._esc(b.text)}</span></div>`;
-      case 'callout':  return `<div class="callout-block">${this._esc(b.text)}</div>`;
-      case 'italic':   return `<p class="italic-block">${this._esc(b.text)}</p>`;
-      case 'paragraph':return `<p style="margin-bottom:14px">${this._esc(b.text)}</p>`;
-      default: return '';
+    switch (b.type) {
+      case 'verse':
+        return `<div class="verse-block"><span class="verse-number">${b.number}</span><span class="verse-text">${this._esc(b.text)}</span></div>`;
+      case 'callout':
+        return `<div class="callout-block">${this._esc(b.text)}</div>`;
+      case 'italic':
+        return `<p class="italic-block">${this._esc(b.text)}</p>`;
+      case 'paragraph':
+        return `<p class="body-paragraph">${this._esc(b.text)}</p>`;
+      case 'listitem':
+        return `<div class="list-item-block"><span class="list-label">${this._esc(b.label)}</span><span class="list-dash"> — </span><span class="list-value">${this._esc(b.text)}</span></div>`;
+      default:
+        return '';
     }
   }
+
+  /* ── StPageFlip ── */
 
   _getDimensions() {
     const vw = window.innerWidth, vh = window.innerHeight;
@@ -416,11 +1328,11 @@ class HebrewBook {
     const spineW = isMobile ? 18 : 28;
     let pageW, pageH;
     if (isMobile) {
-      if (isLandscape) { pageH = vh - 80; pageW = Math.min((vw-spineW)/2-4, pageH*0.72); }
-      else             { pageW = vw - spineW - 16; pageH = Math.min(vh-100, pageW*1.42); }
+      if (isLandscape) { pageH = vh - 80; pageW = Math.min((vw - spineW) / 2 - 4, pageH * 0.72); }
+      else             { pageW = vw - spineW - 16; pageH = Math.min(vh - 100, pageW * 1.42); }
     } else {
-      pageW = Math.min(440, (vw-spineW-40)/2);
-      pageH = Math.max(Math.min(vh-80, pageW*1.45), 400);
+      pageW = Math.min(440, (vw - spineW - 40) / 2);
+      pageH = Math.max(Math.min(vh - 80, pageW * 1.45), 400);
     }
     return { pageW: Math.floor(pageW), pageH: Math.floor(pageH), isMobile, isLandscape };
   }
@@ -441,61 +1353,85 @@ class HebrewBook {
       swipeDistance: 20, clickEventForward: false,
       useMouseEvents: true, startPage: 0, maxShadowOpacity: 0.6,
     });
+
     this.pageFlip.loadFromHTML(document.querySelectorAll('#flip-book .page'));
     this.pageFlip.on('flip', this._onFlip);
     this.pageFlip.on('changeState', () => this._updateDots());
   }
 
   _destroyAndRebuild() {
-    if (this.pageFlip) { try { this.pageFlip.destroy(); } catch(_){} this.pageFlip = null; }
+    if (this.pageFlip) { try { this.pageFlip.destroy(); } catch (_) {} this.pageFlip = null; }
     this._buildPageList(); this._renderAllPages(); this._initPageFlip(); this._initDots();
   }
+
+  /* ── events ── */
 
   _onFlip(e) {
     this.currentPage = e.data;
     this._updateDots();
     const bar = document.getElementById('progress-bar');
-    if (bar) bar.style.width = ((e.data / (this.pageList.length-1)) * 100) + '%';
+    if (bar) bar.style.width = ((e.data / (this.pageList.length - 1)) * 100) + '%';
   }
 
   _onResize() {
     const { pageW, pageH } = this._getDimensions();
     const c = document.getElementById('flip-book');
-    c.style.width = pageW+'px'; c.style.height = pageH+'px';
-    document.getElementById('spine').style.height = pageH+'px';
-    if (this.pageFlip) { try { this.pageFlip.updateState(); } catch(_) { this._destroyAndRebuild(); } }
+    c.style.width = pageW + 'px'; c.style.height = pageH + 'px';
+    document.getElementById('spine').style.height = pageH + 'px';
+    if (this.pageFlip) { try { this.pageFlip.updateState(); } catch (_) { this._destroyAndRebuild(); } }
   }
 
+  /* ── navigation ──
+     Hebrew RTL: the spine is on the RIGHT.
+     "Forward" in the book = tapping the LEFT side (open side).
+     StPageFlip flipNext moves to higher page indices (later pages),
+     which visually peels from the left — correct for RTL.
+  ── */
   _initNavZones() {
     const nL = document.getElementById('nav-left');
     const nR = document.getElementById('nav-right');
+
+    // LEFT tap = next page (forward / deeper into book)
     nL.addEventListener('click', () => this.pageFlip && this.pageFlip.flipNext('bottom'));
+    // RIGHT tap = prev page (back toward cover/spine)
     nR.addEventListener('click', () => this.pageFlip && this.pageFlip.flipPrev('bottom'));
+
     [nL, nR].forEach(z => z.addEventListener('touchstart', (e) => {
       const r = document.createElement('div'); r.className = 'tap-ripple';
       const rect = z.getBoundingClientRect(), t = e.touches[0];
-      r.style.left = (t.clientX-rect.left)+'px'; r.style.top = (t.clientY-rect.top)+'px';
-      z.appendChild(r); setTimeout(()=>r.remove(), 500);
+      r.style.left = (t.clientX - rect.left) + 'px';
+      r.style.top  = (t.clientY - rect.top)  + 'px';
+      z.appendChild(r); setTimeout(() => r.remove(), 500);
     }, { passive: true }));
+
+    // Arrow keys: ← = forward (next), → = back (prev) — RTL convention
     document.addEventListener('keydown', (e) => {
-      if (e.key==='ArrowLeft'||e.key==='ArrowDown')  this.pageFlip && this.pageFlip.flipNext();
-      if (e.key==='ArrowRight'||e.key==='ArrowUp')   this.pageFlip && this.pageFlip.flipPrev();
+      if (e.key === 'ArrowLeft'  || e.key === 'ArrowDown')  this.pageFlip && this.pageFlip.flipNext();
+      if (e.key === 'ArrowRight' || e.key === 'ArrowUp')    this.pageFlip && this.pageFlip.flipPrev();
     });
   }
+
+  /* ── dots ── */
 
   _initDots() {
     const wrap = document.getElementById('chapter-dots');
     wrap.innerHTML = '';
+
     const cDot = document.createElement('div');
     cDot.className = 'chapter-dot'; cDot.title = 'כריכה';
     cDot.addEventListener('click', () => this.pageFlip && this.pageFlip.flip(0));
     wrap.appendChild(cDot);
+
     this.content.chapters.forEach((ch) => {
       const dot = document.createElement('div');
       dot.className = 'chapter-dot'; dot.title = ch.title; dot.dataset.chapterId = ch.id;
-      dot.addEventListener('click', () => { const idx = this.chapterPageMap[ch.id]; if (idx!=null && this.pageFlip) this.pageFlip.flip(idx); });
+      dot.addEventListener('click', () => {
+        const idx = this.chapterPageMap[ch.id];
+        if (idx != null && this.pageFlip) this.pageFlip.flip(idx);
+      });
       wrap.appendChild(dot);
     });
+
     this._updateDots();
   }
 
@@ -505,12 +1441,18 @@ class HebrewBook {
     const pg = this.pageFlip ? this.pageFlip.getCurrentPageIndex() : 0;
     let activeChapter = null;
     this.content.chapters.forEach((ch) => {
-      const start = this.chapterPageMap[ch.id], end = start + ch.pages.length;
+      const start = this.chapterPageMap[ch.id];
+      const end = start + ch.pages.length;
       if (pg >= start && pg < end) activeChapter = ch.id;
     });
     if (pg === 0) { dots[0] && dots[0].classList.add('active'); }
-    else if (activeChapter) { const idx = this.content.chapters.findIndex(c=>c.id===activeChapter); dots[idx+1] && dots[idx+1].classList.add('active'); }
+    else if (activeChapter) {
+      const idx = this.content.chapters.findIndex(c => c.id === activeChapter);
+      dots[idx + 1] && dots[idx + 1].classList.add('active');
+    }
   }
+
+  /* ── editor ── */
 
   _initEditor() {
     document.getElementById('edit-btn').addEventListener('click', () => this._toggleEditor());
@@ -522,19 +1464,24 @@ class HebrewBook {
         const parsed = JSON.parse(document.getElementById('json-editor').value);
         window.bookContent = parsed; this.content = parsed;
         this._destroyAndRebuild(); this._toggleEditor(false);
-      } catch(err) { errEl.textContent = 'שגיאת JSON: ' + err.message; }
+      } catch (err) { errEl.textContent = 'שגיאת JSON: ' + err.message; }
     });
     document.getElementById('flip-book').addEventListener('click', (e) => {
       const item = e.target.closest('[data-chapter]');
-      if (item) { const idx = this.chapterPageMap[parseInt(item.dataset.chapter,10)]; if (idx!=null && this.pageFlip) this.pageFlip.flip(idx); }
+      if (item) {
+        const idx = this.chapterPageMap[parseInt(item.dataset.chapter, 10)];
+        if (idx != null && this.pageFlip) this.pageFlip.flip(idx);
+      }
     });
   }
 
   _toggleEditor(force) {
     this.editorOpen = force !== undefined ? force : !this.editorOpen;
-    if (this.editorOpen) { document.getElementById('json-editor').value = JSON.stringify(this.content,null,2); }
+    if (this.editorOpen) document.getElementById('json-editor').value = JSON.stringify(this.content, null, 2);
     document.getElementById('editor-drawer').classList.toggle('open', this.editorOpen);
   }
+
+  /* ── loader ── */
 
   _hideLoader() {
     setTimeout(() => {
@@ -544,9 +1491,14 @@ class HebrewBook {
     }, 900);
   }
 
-  _esc(s) { return s ? s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;') : ''; }
-  _numToHebrew(n) { return ['','א','ב','ג','ד','ה','ו','ז','ח','ט','י'][n] || String(n); }
-  _debounce(fn, ms) { let t; return (...a) => { clearTimeout(t); t = setTimeout(()=>fn.apply(this,a), ms); }; }
+  /* ── utils ── */
+
+  _esc(s) { return s ? String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;') : ''; }
+
+  _debounce(fn, ms) {
+    let t;
+    return (...a) => { clearTimeout(t); t = setTimeout(() => fn.apply(this, a), ms); };
+  }
 }
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -554,6 +1506,7 @@ document.addEventListener('DOMContentLoaded', () => {
   book.init();
   window._hebrewBook = book;
 });
+
 </script>
 </body>
 </html>

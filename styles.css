@@ -649,6 +649,91 @@ body::before {
   box-shadow: inset 4px 0 12px rgba(0,0,0,0.5);
 }
 
+/* ── Cover extras ── */
+.cover-church {
+  font-family: 'Frank Ruhl Libre', serif;
+  font-size: 11px;
+  letter-spacing: 3px;
+  color: rgba(255,255,255,0.4);
+  margin-bottom: 10px;
+}
+.cover-year {
+  position: absolute;
+  bottom: 36px;
+  font-size: 10px;
+  color: rgba(255,255,255,0.28);
+  letter-spacing: 2px;
+  font-family: 'Frank Ruhl Libre', serif;
+}
+
+/* ── Dedication ── */
+.dedication-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  text-align: center;
+}
+.dedication-symbol {
+  font-size: 18px;
+  color: var(--red);
+  margin-bottom: 32px;
+  letter-spacing: 6px;
+}
+.dedication-line {
+  font-family: 'Frank Ruhl Libre', serif;
+  font-size: 15px;
+  line-height: 2.1;
+  color: var(--text-black);
+  font-weight: 400;
+}
+
+/* ── Body paragraph ── */
+.body-paragraph {
+  margin-bottom: 14px;
+  text-align: justify;
+}
+
+/* ── List items (outsource list) ── */
+.list-item-block {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 10px;
+  align-items: baseline;
+}
+.list-label {
+  color: var(--red);
+  font-weight: 700;
+  white-space: nowrap;
+  font-size: 13px;
+}
+.list-dash { color: var(--gray-mid); }
+.list-value { flex: 1; }
+
+/* ── Blessing ── */
+.blessing-content .blessing-title {
+  font-family: 'Suez One', serif;
+  font-size: 20px;
+  text-align: center;
+  margin: 10px 0 6px;
+  color: var(--text-black);
+}
+.blessing-cross {
+  text-align: center;
+  font-size: 16px;
+  color: var(--red);
+  margin-bottom: 6px;
+}
+.blessing-footer {
+  margin-top: 24px;
+  font-size: 10px;
+  color: var(--gray-mid);
+  text-align: center;
+  letter-spacing: 1px;
+  direction: rtl;
+}
+
 /* Table of contents page */
 .toc-page .page-content {
   padding: 40px 36px;
