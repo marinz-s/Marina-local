@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  <meta name="theme-color" content="#0A0A0A" />
+  <title>הכתבים הקדושים</title>
+
+  <!-- Google Fonts: Hebrew-native serif display + body -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Frank+Ruhl+Libre:wght@300;400;500;700;900&family=Suez+One&display=swap"
+    rel="stylesheet"
+  />
+
+  <!-- StPageFlip (page-flip npm → CDN browser build) -->
+  <script src="https://cdn.jsdelivr.net/npm/page-flip@2.0.7/dist/js/page-flip.browser.js"></script>
+
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <!-- ── Reading progress ── -->
+  <div id="progress-bar" style="width:0%"></div>
+
+  <!-- ── Loading screen ── -->
+  <div id="loading">
+    <div class="loading-cross">✠</div>
+  </div>
+
+  <!-- ── Scene ── -->
+  <div id="scene">
+    <!-- Book: spine + page-flip -->
+    <div id="book-wrapper">
+      <!-- StPageFlip mounts here; pages injected by JS -->
+      <div id="flip-book"></div>
+
+      <!-- Spine on the RIGHT (Hebrew books open right-to-left) -->
+      <div id="spine">
+        <span id="spine-title">הכתבים הקדושים</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Click navigation zones (outside book-wrapper to avoid conflicts) ── -->
+  <div id="nav-right" aria-label="עמוד הבא"></div>
+  <div id="nav-left"  aria-label="עמוד קודם"></div>
+
+  <!-- ── Chapter jump dots ── -->
+  <div id="chapter-dots" role="navigation" aria-label="פרקים"></div>
+
+  <!-- ── Edit button ── -->
+  <button id="edit-btn" title="ערוך תוכן" aria-label="ערוך תוכן">✎</button>
+
+  <!-- ── Editor drawer ── -->
+  <div id="editor-drawer" role="dialog" aria-label="עורך תוכן">
+    <div id="drawer-header">
+      <span>עורך תוכן — JSON</span>
+      <div id="drawer-actions">
+        <button class="drawer-btn" id="editor-close">סגור</button>
+        <button class="drawer-btn primary" id="editor-apply">החל שינויים</button>
+      </div>
+    </div>
+    <textarea id="json-editor" spellcheck="false" autocomplete="off" dir="ltr"></textarea>
+    <div id="editor-error"></div>
+  </div>
+
+  <!-- ── Content + App ── -->
+  <script src="content.js"></script>
+  <script src="app.js"></script>
+
+</body>
+</html>
